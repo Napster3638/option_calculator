@@ -39,9 +39,22 @@ df = pd.DataFrame(data, columns=[
 ])
 
 # ----- Mini Table -----
+# st.subheader("Entry Snapshot")
+# mini_df = df[["Entry Price", "Lots Bought", "MTM Loss at Entry Price"]]
+# st.dataframe(mini_df)
 st.subheader("Entry Snapshot")
+
+# 🔹 Add CSS to increase font size in tables
+st.markdown("""
+    <style>
+    .dataframe td, .dataframe th {
+        font-size: 18px !important;  /* change number to adjust */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 mini_df = df[["Entry Price", "Lots Bought", "MTM Loss at Entry Price"]]
-st.dataframe(mini_df)
+st.dataframe(mini_df)  # interactive table with larger font
 
 # ----- Summary Outputs -----
 total_capital = df["Cumulative Capital"].iloc[-1]
@@ -58,3 +71,4 @@ st.metric("Stop-Loss Trigger Price", round(stoploss_price,2))
 # ----- Full Table (bottom) -----
 st.subheader("Detailed Stepwise Entry & MTM Loss Table")
 st.dataframe(df)
+
