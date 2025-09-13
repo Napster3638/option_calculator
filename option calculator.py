@@ -13,6 +13,7 @@ reduction_percent = st.number_input("Reduction Factor (%)", value=10.0, step=1.0
 lot_size = st.number_input("Lot Size", value=75, step=1)
 initial_lots = st.number_input("Initial Lots", value=4, step=1)
 max_additional_lots = st.number_input("Max Additional Lots at Last Step", value=2, step=1)
+stoploss_percent = st.number_input("Stop-Loss Percentage (%)", value=35.0, step=1.0)  # 🔹 new input
 
 # ----- Calculation -----
 prices = [option_price]
@@ -45,13 +46,13 @@ st.dataframe(mini_df)
 # ----- Summary Outputs -----
 total_capital = df["Cumulative Capital"].iloc[-1]
 average_price = sum([p*l for p,l in zip(prices, lots_sequence)]) / sum(lots_sequence)
-stoploss_amount = total_capital * 0.35
+stoploss_amount = total_capital * (stoploss_percent / 100)  # 🔹 now uses user input
 stoploss_price = (total_capital - stoploss_amount) / (sum(lots_sequence) * lot_size)
 
 st.subheader("Summary Outputs")
 st.metric("Total Capital Employed", round(total_capital,2))
 st.metric("Average Buy Price", round(average_price,2))
-st.metric("Stop-Loss Amount (35% Capital)", round(stoploss_amount,2))
+st.metric(f"Stop-Loss Amount ({stoploss_percent:.0f}% Capital)", round(stoploss_amount,2))
 st.metric("Stop-Loss Trigger Price", round(stoploss_price,2))
 
 # ----- Full Table (bottom) -----
