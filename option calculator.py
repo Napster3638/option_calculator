@@ -5,7 +5,7 @@ import pandas as pd
 
 st.title("Option Entry & Averaging Calculator")
 
-# ----- Inputs (moved from sidebar to main page) -----
+# ----- Inputs -----
 st.header("Input Parameters")
 
 option_price = st.number_input("Option Price", value=120.0, step=1.0)
@@ -32,13 +32,17 @@ for i, (p, l) in enumerate(zip(prices, lots_sequence)):
     mtm_loss = sum([(prev_p - p) * lot_size * prev_l for prev_p, prev_l in zip(prices[:i], lots_sequence[:i])])
     data.append([i+1, round(p,2), l, cumulative_lots, round(cost_step,2), round(cumulative_cost,2), round(mtm_loss,2)])
 
-df = pd.DataFrame(data, columns=["Step", "Entry Price", "Lots Bought", "Cumulative Lots", 
-                                 "Cost This Step", "Cumulative Capital", "MTM Loss at Entry Price"])
+df = pd.DataFrame(data, columns=[
+    "Step", "Entry Price", "Lots Bought", "Cumulative Lots", 
+    "Cost This Step", "Cumulative Capital", "MTM Loss at Entry Price"
+])
 
-st.subheader("Stepwise Entry & MTM Loss Table")
-st.dataframe(df)
+# ----- Mini Table -----
+st.subheader("Entry Snapshot")
+mini_df = df[["Entry Price", "Lots Bought", "MTM Loss at Entry Price"]]
+st.dataframe(mini_df)
 
-# Summary Outputs
+# ----- Summary Outputs -----
 total_capital = df["Cumulative Capital"].iloc[-1]
 average_price = sum([p*l for p,l in zip(prices, lots_sequence)]) / sum(lots_sequence)
 stoploss_amount = total_capital * 0.35
@@ -49,3 +53,7 @@ st.metric("Total Capital Employed", round(total_capital,2))
 st.metric("Average Buy Price", round(average_price,2))
 st.metric("Stop-Loss Amount (35% Capital)", round(stoploss_amount,2))
 st.metric("Stop-Loss Trigger Price", round(stoploss_price,2))
+
+# ----- Full Table (bottom) -----
+st.subheader("Detailed Stepwise Entry & MTM Loss Table")
+st.dataframe(df)
