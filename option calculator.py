@@ -5,16 +5,16 @@ import pandas as pd
 
 st.title("Option Entry & Averaging Calculator")
 
-# ----- Inputs -----
-st.sidebar.header("Input Parameters")
-option_price = st.sidebar.number_input("Option Price", value=120.0, step=1.0)
-reduction_percent = st.sidebar.number_input("Reduction Factor (%)", value=10.0, step=1.0)
-lot_size = st.sidebar.number_input("Lot Size", value=75, step=1)
-initial_lots = st.sidebar.number_input("Initial Lots", value=4, step=1)
-max_additional_lots = st.sidebar.number_input("Max Additional Lots at Last Step", value=2, step=1)
+# ----- Inputs (moved from sidebar to main page) -----
+st.header("Input Parameters")
+
+option_price = st.number_input("Option Price", value=120.0, step=1.0)
+reduction_percent = st.number_input("Reduction Factor (%)", value=10.0, step=1.0)
+lot_size = st.number_input("Lot Size", value=75, step=1)
+initial_lots = st.number_input("Initial Lots", value=4, step=1)
+max_additional_lots = st.number_input("Max Additional Lots at Last Step", value=2, step=1)
 
 # ----- Calculation -----
-# Stepwise entry prices
 prices = [option_price]
 lots_sequence = [initial_lots, 1, 1, 1, max_additional_lots]  # fixed sequence
 for i in range(1, len(lots_sequence)):
@@ -32,8 +32,8 @@ for i, (p, l) in enumerate(zip(prices, lots_sequence)):
     mtm_loss = sum([(prev_p - p) * lot_size * prev_l for prev_p, prev_l in zip(prices[:i], lots_sequence[:i])])
     data.append([i+1, round(p,2), l, cumulative_lots, round(cost_step,2), round(cumulative_cost,2), round(mtm_loss,2)])
 
-df = pd.DataFrame(data, columns=["Step", "Entry Price", "Lots Bought", "Cumulative Lots", "Cost This Step",
-                                 "Cumulative Capital", "MTM Loss at Entry Price"])
+df = pd.DataFrame(data, columns=["Step", "Entry Price", "Lots Bought", "Cumulative Lots", 
+                                 "Cost This Step", "Cumulative Capital", "MTM Loss at Entry Price"])
 
 st.subheader("Stepwise Entry & MTM Loss Table")
 st.dataframe(df)
