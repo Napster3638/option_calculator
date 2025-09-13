@@ -48,7 +48,7 @@ st.subheader("Entry Snapshot")
 st.markdown("""
     <style>
     .dataframe td, .dataframe th {
-        font-size: 54px !important;  /* change number to adjust */
+        font-size: 220px !important;  /* change number to adjust */
     }
     </style>
     """, unsafe_allow_html=True)
@@ -71,6 +71,7 @@ st.metric("Stop-Loss Trigger Price", round(stoploss_price,2))
 # ----- Full Table (bottom) -----
 st.subheader("Detailed Stepwise Entry & MTM Loss Table")
 st.dataframe(df)
+
 
 
 
